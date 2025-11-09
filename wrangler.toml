@@ -1,0 +1,19 @@
+name = "smart-study-buddy-22"
+compatibility_date = "2025-11-09"
+
+# Pages configuration
+pages_build_output_dir = "dist"
+
+[build]
+command = "npm run build"
+
+# SPA routing - fallback to index.html for client-side routing
+[[rules]]
+type = "Text"
+globs = ["**/*"]
+fallthrough = true
+
+[[rules]]
+type = "Text"
+globs = ["**/*.html"]
+fallthrough = false

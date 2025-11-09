@@ -1,0 +1,26 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    env_file:
+      - backend/.env
+    volumes:
+      - ./backend/token.json:/app/backend/token.json:ro
+      - ./backend/credentials.json:/app/backend/credentials.json:ro
+    ports:
+      - "5001:5001"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    environment:
+      - VITE_SUPABASE_URL=${VITE_SUPABASE_URL}
+      - VITE_SUPABASE_ANON_KEY=${VITE_SUPABASE_ANON_KEY}
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
