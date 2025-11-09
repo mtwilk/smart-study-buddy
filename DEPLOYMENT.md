@@ -232,6 +232,82 @@ Complete workflow test:
 
 ---
 
+## Troubleshooting
+
+### ❌ Railway Deployment Failed
+
+**Error: "dockerfile parse error: unknown instruction: <<<<<<<" or "<<<<<<< HEAD"**
+
+This means you have **Git merge conflict markers** in your files.
+
+**Fix:**
+```bash
+# Check for merge conflicts
+git status
+
+# Look for files with conflict markers
+grep -r "<<<<<<< HEAD" .
+
+# Resolve conflicts in the file, then:
+git add .
+git commit -m "Resolve merge conflicts"
+git push origin main
+```
+
+**Error: "Could not find requirements.txt"**
+
+Railway needs to know where your backend code is.
+
+**Fix:**
+1. Railway Dashboard → Your Service → **Settings**
+2. Set **Root Directory** to: `backend`
+3. Save and redeploy
+
+**Error: "Python version mismatch"**
+
+Check that all config files use the same Python version.
+
+**Fix:**
+```bash
+# Make sure these match:
+cat backend/runtime.txt          # Should be: python-3.11
+cat backend/nixpacks.toml        # Should use: python311
+```
+
+**Error: "Module not found" or "Import error"**
+
+Missing dependencies.
+
+**Fix:**
+```bash
+# Add missing packages to requirements.txt
+cd backend
+pip freeze > requirements.txt
+git add requirements.txt
+git commit -m "Update requirements"
+git push
+```
+
+### ❌ Cloudflare Build Failed
+
+**Error: "VITE_SUPABASE_URL is not defined"**
+
+**Fix:**
+- Go to Cloudflare Pages → Your Project → **Settings** → **Environment variables**
+- Add variables to both **Production** and **Preview**
+- All variables must start with `VITE_`
+
+### ❌ CORS Errors
+
+Browser console shows: `Access to fetch... has been blocked by CORS policy`
+
+**Fix:**
+1. Update `FRONTEND_URL` in Railway to match your Cloudflare URL exactly
+2. Railway → **Variables** → Set `FRONTEND_URL=https://smart-study-buddy.pages.dev`
+3. Redeploy Railway service
+
+---
+
 ## Need Help?
 
 - **Railway logs**: Railway Dashboard → Deployments → View Logs
